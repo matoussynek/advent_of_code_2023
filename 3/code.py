@@ -4,7 +4,6 @@ class PartNumber:
         self.number = number
         self.found = False
         self.coordinates = []
-        print('Created umber:', number)
 
 class Symbol:
     def __init__(self,symbol):
