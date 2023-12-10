@@ -91,35 +91,29 @@ class Map:
                     break
         
         print(f'Max distance: {len(self.found_nodes)//2}')
-
-    def star2_crossings_in_dir(self, pos, dir):
-        crosses = 0
-        while pos[1] >= 0 and pos[1] < len(self.nodes) and pos[0] >= 0 and pos[0] < len(self.nodes[pos[1]]):
-            node = self.get_node(pos)
-            if node in self.found_nodes:
-                crosses += 1
-            pos = (pos[0]+dir[0], pos[1]+dir[1])
-        
-        return crosses
-
-    def star2_has_odd_crossings(self, pos):
-        is_odd = True
-        is_odd = is_odd and (self.star2_crossings_in_dir(pos, Directions.UP.value) % 2) == 1
-        is_odd = is_odd and (self.star2_crossings_in_dir(pos, Directions.RIGHT.value) % 2) == 1
-        is_odd = is_odd and (self.star2_crossings_in_dir(pos, Directions.DOWN.value) % 2) == 1
-        is_odd = is_odd and (self.star2_crossings_in_dir(pos, Directions.LEFT.value) % 2) == 1
-
-        return is_odd
-
     
     def star2(self):
         tot = 0
         for y,row in enumerate(self.nodes):
+            history = None
+            crossed = 0
             for x, c in enumerate(row):
                 if c in self.found_nodes:
-                    continue
-                if self.star2_has_odd_crossings((x,y)):
-                    tot += 1
+                    if c.symbol == '|':
+                        crossed += 1
+                    elif c.symbol == '7':
+                        if history == 'L':
+                            crossed += 1
+                    elif c.symbol == 'J':
+                        if history == 'F':
+                            crossed += 1
+                    elif c.symbol == 'S':
+                        crossed += 1
+                    if c.symbol != '-':
+                        history = c.symbol
+                else:
+                    if crossed % 2:
+                        tot += 1
         
         print(f'Total enclosed tiles: {tot}')
 
@@ -127,5 +121,4 @@ class Map:
     
 map = Map(open('./input.txt').readlines())
 map.star1()
-#this doesnt work, i dont feel like working on this more...
 map.star2()
